@@ -1,47 +1,57 @@
 $ErrorActionPreference = "Stop"
 
-# Configurações
-$repo = "eovinisouza/VoidBackup"
+$repo   = "eovinisouza/VoidBackup"
 $branch = "main"
 
-$steamPluginsPath = "${env:ProgramFiles(x86)}\Steam\plugins\VoidBackup"
+$steamPluginsRoot = "${env:ProgramFiles(x86)}\Steam\plugins"
+$pluginPath       = "$steamPluginsRoot\VoidBackup"
 
-Write-Host "Instalador VoidBackup iniciado..."
+$tempPath = "$env:TEMP\VoidBackupInstall"
+$zipPath  = "$tempPath\VoidBackup.zip"
 
-# Cria diretório de plugin se não existir
-if (!(Test-Path $steamPluginsPath)) {
-    Write-Host "Criando diretório de plugins em $steamPluginsPath..."
-    New-Item -ItemType Directory -Path $steamPluginsPath | Out-Null
+Write-Host "Instalando VoidBackup..."
+
+# Garante a pasta plugins
+if (!(Test-Path $steamPluginsRoot)) {
+    New-Item -ItemType Directory -Path $steamPluginsRoot | Out-Null
 }
 
-# Diretório temporário
-$tempPath = "$env:TEMP\VoidBackup"
+# Remove instalação anterior
+if (Test-Path $pluginPath) {
+    Write-Host "Removendo instalação anterior..."
+    Remove-Item $pluginPath -Recurse -Force
+}
 
+# Prepara pasta temporária
 if (Test-Path $tempPath) {
     Remove-Item $tempPath -Recurse -Force
 }
 
 New-Item -ItemType Directory -Path $tempPath | Out-Null
 
-Write-Host "Baixando arquivos do GitHub..."
-
-# Baixa a branch principal como ZIP
-$url = "https://github.com/$repo/archive/refs/heads/$branch.zip"
-Invoke-WebRequest -Uri $url -OutFile "$tempPath\VoidBackup.zip"
+Write-Host "Baixando repositório..."
+Invoke-WebRequest `
+    -Uri "https://github.com/$repo/archive/refs/heads/$branch.zip" `
+    -OutFile $zipPath
 
 Write-Host "Extraindo arquivos..."
+Expand-Archive -Path $zipPath -DestinationPath $tempPath -Force
 
-Expand-Archive "$tempPath\VoidBackup.zip" -DestinationPath $tempPath -Force
+# Caminho REAL do plugin dentro do zip
+$extractedPluginPath = Join-Path `
+    (Get-ChildItem $tempPath | Where-Object { $_.PSIsContainer } | Select-Object -First 1).FullName `
+    "VoidBackup"
 
-# Localiza a pasta extraída
-$sourceFolder = Get-ChildItem $tempPath | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+if (!(Test-Path $extractedPluginPath)) {
+    throw "Estrutura do repositório inesperada. Pasta VoidBackup não encontrada."
+}
 
-Write-Host "Copiando arquivos para plugins da Steam..."
+Write-Host "Copiando arquivos para a Steam..."
+Copy-Item $extractedPluginPath $pluginPath -Recurse -Force
 
-Copy-Item "$($sourceFolder.FullName)\VoidBackup\*" $steamPluginsPath -Recurse -Force
-
-# Limpa temporários
+# Limpeza FINAL garantida
+Write-Host "Limpando arquivos temporários..."
 Remove-Item $tempPath -Recurse -Force
 
-Write-Host "Instalação concluída com sucesso!"
-Write-Host "Reinicie o cliente Steam para aplicar o plugin."
+Write-Host "VoidBackup instalado com sucesso."
+Write-Host "Reinicie a Steam para aplicar o plugin."
