@@ -4,7 +4,7 @@ $ErrorActionPreference = "Stop"
 $repo = "eovinisouza/VoidBackup"
 $branch = "main"
 
-$steamPluginsPath = "${env:ProgramFiles(x86)}\Steam\plugins"
+$steamPluginsPath = "${env:ProgramFiles(x86)}\Steam\plugins\VoidBackup"
 
 Write-Host "Instalador VoidBackup iniciado..."
 
