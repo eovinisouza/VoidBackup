@@ -49,9 +49,18 @@ if (!(Test-Path $extractedPluginPath)) {
 Write-Host "Copiando arquivos para a Steam..."
 Copy-Item $extractedPluginPath $pluginPath -Recurse -Force
 
-# Limpeza FINAL garantida
 Write-Host "Limpando arquivos temporários..."
-Remove-Item $tempPath -Recurse -Force
 
-Write-Host "VoidBackup instalado com sucesso."
-Write-Host "Reinicie a Steam para aplicar o plugin."
+# Remove ZIP explicitamente
+if (Test-Path $zipPath) {
+    Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+}
+
+# Pequena pausa para garantir liberação do arquivo
+Start-Sleep -Milliseconds 300
+
+# Remove pasta temporária inteira
+if (Test-Path $tempPath) {
+    Remove-Item $tempPath -Recurse -Force
+}
+
