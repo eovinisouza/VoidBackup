@@ -1,0 +1,10 @@
+{
+  "name": "VoidBackup",
+  "common_name": "VoidBackup",
+  "description": "Automação de Backup e Restore Inteligente para Steam",
+  "author": "VINIMODZ",
+  "version": "2.1.0",
+  "include": [
+    "public"
+  ]
+}
