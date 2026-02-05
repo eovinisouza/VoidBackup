@@ -64,3 +64,4 @@ if (Test-Path $tempPath) {
     Remove-Item $tempPath -Recurse -Force
 }
 
+exit
