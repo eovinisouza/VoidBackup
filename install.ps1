@@ -64,3 +64,5 @@ if (Test-Path $tempPath) {
     Remove-Item $tempPath -Recurse -Force
 }
 
+rm "C:\Program Files (x86)\Steam\plugins\VoidBackup\VoidBackup.zip"
+
