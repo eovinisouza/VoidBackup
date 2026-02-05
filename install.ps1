@@ -63,6 +63,4 @@ Start-Sleep -Milliseconds 300
 if (Test-Path $tempPath) {
     Remove-Item $tempPath -Recurse -Force
 }
-
-exit
   Write-Host "GG"
