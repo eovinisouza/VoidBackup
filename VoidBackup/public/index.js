@@ -19,7 +19,7 @@
         },
 
         labels: {
-            modal_title: "BACKUP",
+            modal_title: "VOID BACKUP",
             btn_restart_steam: "Reiniciar Steam",
             btn_delete: "Excluir",
             btn_restore: "Restaurar",
