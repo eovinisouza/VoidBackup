@@ -65,3 +65,4 @@ if (Test-Path $tempPath) {
 }
 
 exit
+  Write-Host "GG"
